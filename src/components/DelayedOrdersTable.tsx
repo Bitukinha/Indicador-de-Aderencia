@@ -8,13 +8,14 @@ interface Props {
   onEdit: (order: DelayedOrder, globalIndex: number) => void;
   onDelete: (globalIndex: number) => void;
   isAuthenticated: boolean;
+  title?: string;
 }
 
-export function DelayedOrdersTable({ orders, globalIndices, onEdit, onDelete, isAuthenticated }: Props) {
+export function DelayedOrdersTable({ orders, globalIndices, onEdit, onDelete, isAuthenticated, title }: Props) {
   return (
     <div className="bg-card rounded-lg shadow-sm overflow-hidden">
       <div className="p-5 border-b">
-        <h3 className="font-semibold text-card-foreground">Pedidos Atrasados</h3>
+        <h3 className="font-semibold text-card-foreground">{title ?? "Pedidos"}</h3>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -33,7 +34,7 @@ export function DelayedOrdersTable({ orders, globalIndices, onEdit, onDelete, is
           <tbody>
             {orders.length === 0 && (
               <tr>
-                <td colSpan={isAuthenticated ? 8 : 7} className="p-6 text-center text-muted-foreground">Nenhum pedido atrasado</td>
+                <td colSpan={isAuthenticated ? 8 : 7} className="p-6 text-center text-muted-foreground">Nenhum pedido encontrado</td>
               </tr>
             )}
             {orders.map((o, i) => (

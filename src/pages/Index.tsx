@@ -12,7 +12,6 @@ import { OrderFormDialog } from "@/components/OrderFormDialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
-import nutrimilhoLogo from "@/assets/nutrimilho-logo.png";
 
 const Index = () => {
   const { user, signOut } = useAuth();
@@ -127,7 +126,9 @@ const Index = () => {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-3">
-              <img src={nutrimilhoLogo} alt="Nutrimilho" className="h-10 object-contain" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-sm font-bold text-foreground">
+                NM
+              </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">Indicador de Aderência</h1>
                 <p className="text-sm text-muted-foreground">Acompanhamento de entregas</p>

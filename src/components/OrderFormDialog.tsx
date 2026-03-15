@@ -20,7 +20,7 @@ const emptyOrder: DelayedOrder = {
   quantidade: "",
   dataPrevista: "",
   dataEntregue: "",
-  diasAtraso: 1,
+  diasAtraso: 0,
   motivo: "",
   mes: "Janeiro",
   ano: currentYear,
@@ -95,7 +95,7 @@ export function OrderFormDialog({ open, onClose, onSave, order }: Props) {
             </div>
             <div className="space-y-1.5">
               <Label>Dias Atraso</Label>
-              <Input type="number" min={1} value={form.diasAtraso} onChange={(e) => set("diasAtraso", Number(e.target.value))} required />
+              <Input type="number" min={0} value={form.diasAtraso} onChange={(e) => set("diasAtraso", Number(e.target.value))} required />
             </div>
           </div>
 

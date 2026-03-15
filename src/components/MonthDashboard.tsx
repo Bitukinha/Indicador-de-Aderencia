@@ -23,23 +23,30 @@ interface Props {
 
 export function MonthDashboard({ mes, orders: allOrders, noPrazo, onNoPrazoChange, onEdit, onDelete, isAuthenticated }: Props) {
   const monthOrders = allOrders.filter(o => o.mes === mes);
-  const atrasados = monthOrders.length;
+  const onTimeOrders = monthOrders.filter((o) => o.diasAtraso <= 0);
+  const delayedOrders = monthOrders.filter((o) => o.diasAtraso > 0);
+
+  const atrasados = delayedOrders.length;
   const total = noPrazo + atrasados;
   const aderencia = total > 0 ? (noPrazo / total) * 100 : 0;
-  const mediaAtraso = monthOrders.length > 0
-    ? (monthOrders.reduce((s, o) => s + o.diasAtraso, 0) / monthOrders.length).toFixed(1)
+  const mediaAtraso = delayedOrders.length > 0
+    ? (delayedOrders.reduce((s, o) => s + o.diasAtraso, 0) / delayedOrders.length).toFixed(1)
     : "0";
 
-  const maxAtraso = monthOrders.length > 0 ? Math.max(...monthOrders.map(o => o.diasAtraso)) : 0;
-  const minAtraso = monthOrders.length > 0 ? Math.min(...monthOrders.map(o => o.diasAtraso)) : 0;
+  const maxAtraso = delayedOrders.length > 0 ? Math.max(...delayedOrders.map(o => o.diasAtraso)) : 0;
+  const minAtraso = delayedOrders.length > 0 ? Math.min(...delayedOrders.map(o => o.diasAtraso)) : 0;
 
   const globalIndices = allOrders
     .map((o, i) => ({ order: o, index: i }))
     .filter(({ order }) => order.mes === mes);
 
-  const delayRanges = { "1 dia": 0, "2-3 dias": 0, "4-7 dias": 0, "8+ dias": 0 };
+  const onTimeGlobalIndices = globalIndices.filter(({ order }) => order.diasAtraso <= 0).map(({ index }) => index);
+  const delayedGlobalIndices = globalIndices.filter(({ order }) => order.diasAtraso > 0).map(({ index }) => index);
+
+  const delayRanges = { "No Prazo": 0, "1 dia": 0, "2-3 dias": 0, "4-7 dias": 0, "8+ dias": 0 };
   monthOrders.forEach(o => {
-    if (o.diasAtraso === 1) delayRanges["1 dia"]++;
+    if (o.diasAtraso <= 0) delayRanges["No Prazo"]++;
+    else if (o.diasAtraso === 1) delayRanges["1 dia"]++;
     else if (o.diasAtraso <= 3) delayRanges["2-3 dias"]++;
     else if (o.diasAtraso <= 7) delayRanges["4-7 dias"]++;
     else delayRanges["8+ dias"]++;
@@ -112,8 +119,18 @@ export function MonthDashboard({ mes, orders: allOrders, noPrazo, onNoPrazoChang
       </div>
 
       <DelayedOrdersTable
-        orders={monthOrders}
-        globalIndices={globalIndices.map(g => g.index)}
+        title="Pedidos no Prazo"
+        orders={onTimeOrders}
+        globalIndices={onTimeGlobalIndices}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        isAuthenticated={isAuthenticated}
+      />
+
+      <DelayedOrdersTable
+        title="Pedidos Atrasados"
+        orders={delayedOrders}
+        globalIndices={delayedGlobalIndices}
         onEdit={onEdit}
         onDelete={onDelete}
         isAuthenticated={isAuthenticated}
