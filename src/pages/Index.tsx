@@ -23,6 +23,20 @@ const Index = () => {
   const [activeMeses, setActiveMeses] = useState<MesType[]>(["Janeiro", "Fevereiro"]);
   const [selectedAno, setSelectedAno] = useState<number>(2026);
   const [noPrazo, setNoPrazo] = useState<Record<string, number>>({ Janeiro: 44, Fevereiro: 28 });
+
+  const periodStart = activeMeses[0];
+  const periodEnd = activeMeses[activeMeses.length - 1];
+
+  const setPeriod = (start: MesType, end: MesType) => {
+    const startIndex = MESES.indexOf(start);
+    const endIndex = MESES.indexOf(end);
+    if (startIndex === -1 || endIndex === -1) return;
+
+    const sliceStart = Math.min(startIndex, endIndex);
+    const sliceEnd = Math.max(startIndex, endIndex);
+    const newMonths = MESES.slice(sliceStart, sliceEnd + 1);
+    setActiveMeses(newMonths);
+  };
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState<{ order: DelayedOrder; index: number } | null>(null);
   const [addMonthOpen, setAddMonthOpen] = useState(false);
@@ -135,6 +149,26 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-muted-foreground">Período</span>
+                <select
+                  value={periodStart}
+                  onChange={(e) => setPeriod(e.target.value as MesType, periodEnd)}
+                  className="h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {MESES.map((m) => <option key={m} value={m}>{m}</option>)}
+                </select>
+                <span className="text-xs text-muted-foreground">até</span>
+                <select
+                  value={periodEnd}
+                  onChange={(e) => setPeriod(periodStart, e.target.value as MesType)}
+                  className="h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {MESES.map((m) => <option key={m} value={m}>{m}</option>)}
+                </select>
+              </div>
+
               {/* Year selector */}
               <select
                 value={selectedAno}
